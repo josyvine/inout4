@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_admin_employees"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="Employees" />
+
+    <item
+        android:id="@+id/nav_admin_attendance"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        android:title="Attendance" />
+
+    <item
+        android:id="@+id/nav_admin_locations"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="Locations" />
+
+    <item
+        android:id="@+id/nav_admin_qr"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="QR Code" />
+
+</menu>
