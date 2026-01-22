@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+    <!-- Column 1: Date (Matches weight 1.2 in header) -->
+    <TextView
+        android:id="@+id/tv_col_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="2026-01-22"
+        android:textColor="@android:color/black"
+        android:textSize="13sp" />
+
+    <!-- Column 2: Check-In Time (Matches weight 1 in header) -->
+    <TextView
+        android:id="@+id/tv_col_in"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="09:00 AM"
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="13sp" />
+
+    <!-- Column 3: Check-Out Time (Matches weight 1 in header) -->
+    <TextView
+        android:id="@+id/tv_col_out"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="05:30 PM"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="13sp" />
+
+    <!-- Column 4: Total Hours (Matches weight 1 in header) -->
+    <TextView
+        android:id="@+id/tv_col_hours"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:text="8h 30m"
+        android:textColor="@android:color/black"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
