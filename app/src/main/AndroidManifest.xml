@@ -1,1 +1,92 @@
-j
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Permissions required for Firebase, QR Scanning, and Check-In Logic -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <!-- Camera permission for QR Scanning (Employee) and Profile Photos -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    
+    <!-- Location permissions for Geofencing Check-In -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
+    <!-- Biometric permission for Fingerprint Verification -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <!-- Features used by the app -->
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="true" />
+
+    <application
+        android:name=".InOutApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/inout"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/inout"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:targetApi="31">
+
+        <!-- 1. Splash Screen - The Entry Point -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 2. Role Selection (Admin vs Employee) -->
+        <activity
+            android:name=".RoleSelectionActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- 3. Common Login Activity (Google Sign-In) -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- 4. Admin Setup (Upload Firebase JSON) -->
+        <activity
+            android:name=".AdminSetupActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- 5. Admin Dashboard -->
+        <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- 6. Employee QR Scan (First time setup) -->
+        <activity
+            android:name=".EmployeeQrScanActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- 7. Employee Profile Setup (Photo/Phone) -->
+        <activity
+            android:name=".EmployeeProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- 8. Employee Dashboard -->
+        <activity
+            android:name=".EmployeeDashboardActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+    </application>
+
+</manifest>
