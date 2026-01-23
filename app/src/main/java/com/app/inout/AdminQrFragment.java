@@ -1,4 +1,4 @@
-package com.inout.app;
+package com.app.inout;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,8 +20,8 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
-import com.inout.app.databinding.FragmentAdminQrBinding;
-import com.inout.app.utils.EncryptionHelper;
+import com.app.inout.databinding.FragmentAdminQrBinding;
+import com.app.inout.utils.EncryptionHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +37,7 @@ public class AdminQrFragment extends Fragment {
 
     private static final String TAG = "AdminQrFragment";
     private FragmentAdminQrBinding binding;
-    private Bitmap generatedQrBitmap; // To store the bitmap for sharing
+    private Bitmap generatedQrBitmap; 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,8 +51,8 @@ public class AdminQrFragment extends Fragment {
 
         binding.btnGenerateQr.setOnClickListener(v -> generateCompanyQr());
         
-        // Share Button Listener
-        binding.btnShare_qr.setOnClickListener(v -> {
+        // FIXED: Changed from btnShare_qr to btnShareQr
+        binding.btnShareQr.setOnClickListener(v -> {
             if (generatedQrBitmap != null) {
                 shareQrImage();
             }
@@ -87,7 +87,9 @@ public class AdminQrFragment extends Fragment {
                     binding.ivQrCode.setImageBitmap(generatedQrBitmap);
                     binding.ivQrCode.setVisibility(View.VISIBLE);
                     binding.tvPlaceholder.setVisibility(View.GONE);
-                    binding.btnShare_qr.setVisibility(View.VISIBLE); // Show share button
+                    
+                    // FIXED: Changed from btnShare_qr to btnShareQr
+                    binding.btnShareQr.setVisibility(View.VISIBLE); 
                     
                     binding.tvInstruction.setText("Company: " + companyName);
                     Toast.makeText(getContext(), "QR Generated Successfully", Toast.LENGTH_SHORT).show();
@@ -99,30 +101,23 @@ public class AdminQrFragment extends Fragment {
         }
     }
 
-    /**
-     * Official Android Share Logic
-     */
     private void shareQrImage() {
         try {
-            // 1. Create a temporary file in the app's cache
             File cachePath = new File(requireContext().getCacheDir(), "images");
-            cachePath.mkdirs(); // Create folders if they don't exist
-            FileOutputStream stream = new FileOutputStream(cachePath + "/company_qr.png");
+            cachePath.mkdirs(); 
+            File newFile = new File(cachePath, "company_qr.png");
+            FileOutputStream stream = new FileOutputStream(newFile);
             
-            // 2. Compress the QR bitmap into the file
             generatedQrBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             stream.close();
 
-            // 3. Get the content URI using FileProvider (Package name must match Manifest)
-            File imagePath = new File(requireContext().getCacheDir(), "images");
-            File newFile = new File(imagePath, "company_qr.png");
+            // Authority must match AndroidManifest.xml
             Uri contentUri = FileProvider.getUriForFile(requireContext(), "com.inout.app.fileprovider", newFile);
 
             if (contentUri != null) {
-                // 4. Create and launch the Share Intent
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Required for receiving apps
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); 
                 shareIntent.setDataAndType(contentUri, requireContext().getContentResolver().getType(contentUri));
                 shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Company Registration QR");
