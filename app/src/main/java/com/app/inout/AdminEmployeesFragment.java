@@ -68,17 +68,20 @@ public class AdminEmployeesFragment extends Fragment implements EmployeeListAdap
         binding.recyclerViewEmployees.setAdapter(adapter);
     }
 
+    /**
+     * Fetches all official locations saved by the admin.
+     */
     private void fetchLocations() {
         db.collection("locations").get().addOnSuccessListener(queryDocumentSnapshots -> {
             locationList.clear();
             for (DocumentSnapshot doc : queryDocumentSnapshots) {
                 CompanyConfig loc = doc.toObject(CompanyConfig.class);
                 if (loc != null) {
-                    loc.setId(doc.getId());
+                    loc.setId(doc.getId()); // Store the document ID
                     locationList.add(loc);
                 }
             }
-        });
+        }).addOnFailureListener(e -> Log.e(TAG, "Error fetching locations", e));
     }
 
     private void listenForEmployees() {
@@ -89,7 +92,10 @@ public class AdminEmployeesFragment extends Fragment implements EmployeeListAdap
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                         binding.progressBar.setVisibility(View.GONE);
-                        if (error != null) return;
+                        if (error != null) {
+                            Log.e(TAG, "Listen failed.", error);
+                            return;
+                        }
 
                         if (value != null) {
                             employeeList.clear();
@@ -110,7 +116,7 @@ public class AdminEmployeesFragment extends Fragment implements EmployeeListAdap
     @Override
     public void onApproveClicked(User user) {
         if (locationList.isEmpty()) {
-            Toast.makeText(getContext(), "Please add an Office Location first!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Error: Please save an Office Location first!", Toast.LENGTH_LONG).show();
             return;
         }
         showApproveDialog(user);
@@ -120,30 +126,38 @@ public class AdminEmployeesFragment extends Fragment implements EmployeeListAdap
     public void onDeleteClicked(User user) {
         new AlertDialog.Builder(requireContext())
                 .setTitle("Remove Employee")
-                .setMessage("Delete " + user.getName() + "?")
-                .setPositiveButton("Delete", (dialog, which) -> {
+                .setMessage("Are you sure you want to remove " + user.getName() + "?")
+                .setPositiveButton("Remove", (dialog, which) -> {
                     db.collection("users").document(user.getUid()).delete();
-                }).setNegativeButton("Cancel", null).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
+    /**
+     * Updated Dialog to include a Location Selection dropdown.
+     */
     private void showApproveDialog(User user) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Approve " + user.getName());
+        builder.setMessage("Assign ID and choose the workplace location:");
 
-        // Create a layout to hold both Employee ID input and Location Spinner
+        // Layout to hold the ID input and the Location Spinner
         LinearLayout layout = new LinearLayout(requireContext());
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50, 40, 50, 10);
+        layout.setPadding(60, 20, 60, 20);
 
         final EditText inputId = new EditText(requireContext());
-        inputId.setHint("Enter Employee ID (e.g. EMP001)");
+        inputId.setHint("Employee ID (e.g. EMP001)");
         inputId.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
         layout.addView(inputId);
 
-        // Location Dropdown
+        // Spinner (Dropdown) for locations
         final Spinner spinner = new Spinner(requireContext());
+        spinner.setPadding(0, 30, 0, 30);
         List<String> names = new ArrayList<>();
         for (CompanyConfig c : locationList) names.add(c.getName());
+        
         ArrayAdapter<String> spinAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, names);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinAdapter);
@@ -158,7 +172,7 @@ public class AdminEmployeesFragment extends Fragment implements EmployeeListAdap
                 String locId = locationList.get(selectedIndex).getId();
                 approveUserInFirestore(user, empId, locId);
             } else {
-                Toast.makeText(getContext(), "All fields required!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Employee ID and Location are required!", Toast.LENGTH_SHORT).show();
             }
         });
         builder.setNegativeButton("Cancel", null);
@@ -169,8 +183,8 @@ public class AdminEmployeesFragment extends Fragment implements EmployeeListAdap
         db.collection("users").document(user.getUid())
                 .update("approved", true, 
                         "employeeId", empId, 
-                        "assignedLocationId", locId)
-                .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Approved and Assigned!", Toast.LENGTH_SHORT).show())
+                        "assignedLocationId", locId) // CRITICAL FIX: Link the location to the user
+                .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Employee Approved and Location Assigned!", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
