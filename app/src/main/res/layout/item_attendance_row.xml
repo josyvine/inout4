@@ -1,53 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Use a fixed width for the entire row to enable horizontal scrolling in the parent -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="1000dp"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:orientation="horizontal"
-    android:padding="12dp">
+    android:paddingVertical="12dp"
+    android:paddingHorizontal="4dp"
+    android:gravity="center_vertical">
 
-    <!-- Column 1: Date (Matches weight 1.2 in header) -->
+    <!-- 1. Date -->
     <TextView
         android:id="@+id/tv_col_date"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.2"
         android:text="2026-01-22"
+        android:gravity="center"
         android:textColor="@android:color/black"
         android:textSize="13sp" />
 
-    <!-- Column 2: Check-In Time (Matches weight 1 in header) -->
+    <!-- 2. Day -->
+    <TextView
+        android:id="@+id/tv_col_day"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:text="Monday"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="13sp" />
+
+    <!-- 3. Check-In -->
     <TextView
         android:id="@+id/tv_col_in"
-        android:layout_width="0dp"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
         android:text="09:00 AM"
-        android:textColor="@android:color/holo_green_dark"
+        android:gravity="center"
+        android:textColor="@color/status_green"
         android:textSize="13sp" />
 
-    <!-- Column 3: Check-Out Time (Matches weight 1 in header) -->
+    <!-- 4. Check-Out -->
     <TextView
         android:id="@+id/tv_col_out"
-        android:layout_width="0dp"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
         android:text="05:30 PM"
-        android:textColor="@android:color/holo_red_dark"
+        android:gravity="center"
+        android:textColor="@color/status_red"
         android:textSize="13sp" />
 
-    <!-- Column 4: Total Hours (Matches weight 1 in header) -->
+    <!-- 5. Total Hours -->
     <TextView
         android:id="@+id/tv_col_hours"
-        android:layout_width="0dp"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="end"
         android:text="8h 30m"
+        android:gravity="center"
         android:textColor="@android:color/black"
         android:textSize="13sp"
         android:textStyle="bold" />
+
+    <!-- 6. Location Name -->
+    <TextView
+        android:id="@+id/tv_col_location"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="Canara Bank"
+        android:gravity="start|center_vertical"
+        android:paddingStart="8dp"
+        android:textColor="@android:color/black"
+        android:textSize="13sp" />
+
+    <!-- 7. Distance (Meters) -->
+    <TextView
+        android:id="@+id/tv_col_distance"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="12m"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="13sp" />
+
+    <!-- 8. Fingerprint Verified (Icon) -->
+    <FrameLayout
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/iv_col_fingerprint"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_verified_small" />
+    </FrameLayout>
+
+    <!-- 9. GPS Verified (Icon) -->
+    <FrameLayout
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/iv_col_gps"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_verified_small" />
+    </FrameLayout>
+
+    <!-- 10. Status (Icon Indicator) -->
+    <FrameLayout
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/iv_col_status"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@android:drawable/presence_online" />
+    </FrameLayout>
 
 </LinearLayout>
