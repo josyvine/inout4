@@ -4,6 +4,7 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 
 /**
  * Model class representing a user in the 'users' Firestore collection.
+ * This is the bridge between Firestore and the app memory.
  */
 @IgnoreExtraProperties
 public class User {
@@ -17,18 +18,18 @@ public class User {
     private String employeeId; // Assigned by Admin (e.g., EMP001)
     private String photoUrl;
     
-    // For Employees: The ID of the location they are assigned to for check-in
+    // CRITICAL FIELD: This must match the Firestore key exactly
     private String assignedLocationId; 
 
     public User() {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+        // Default constructor required for Firestore
     }
 
     public User(String uid, String email, String role) {
         this.uid = uid;
         this.email = email;
         this.role = role;
-        this.approved = false; // Default to false
+        this.approved = false;
     }
 
     // Getters and Setters
