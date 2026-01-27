@@ -1,4 +1,4 @@
-package com.app.inout.adapters;
+package com.inout.app;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,8 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.inout.app.R;
-import com.app.inout.models.User;
+import com.inout.app.models.User;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,7 +27,6 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
     private final List<User> employeeList;
     private final OnEmployeeActionListener listener;
     
-    // Set to store the UIDs of selected employees for bulk actions
     private final Set<String> selectedUserIds = new HashSet<>();
 
     public interface OnEmployeeActionListener {
@@ -57,7 +55,6 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
         holder.tvName.setText(user.getName());
         holder.tvPhone.setText(user.getPhone() != null ? user.getPhone() : "No Phone");
         
-        // Handle Status Display
         if (user.isApproved()) {
             String idSuffix = (user.getEmployeeId() != null) ? " (" + user.getEmployeeId() + ")" : "";
             holder.tvStatus.setText("Status: Approved" + idSuffix);
@@ -69,7 +66,6 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
             holder.btnApprove.setVisibility(View.VISIBLE);
         }
         
-        // Multi-selection visual feedback
         if (selectedUserIds.contains(user.getUid())) {
             holder.viewOverlay.setVisibility(View.VISIBLE);
             holder.ivCheck.setVisibility(View.VISIBLE);
@@ -78,10 +74,9 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
             holder.ivCheck.setVisibility(View.GONE);
         }
 
-        // Standard profile placeholder
         holder.ivProfile.setImageResource(R.drawable.inout); 
 
-        // Individual Approve Button Logic
+        // Individual Approve Button Click
         holder.btnApprove.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onApproveClicked(user);
@@ -93,15 +88,13 @@ public class EmployeeListAdapter extends RecyclerView.Adapter<EmployeeListAdapte
             toggleSelection(user.getUid());
         });
 
-        // LONG PRESS: Handle individual delete if nothing selected, or bulk action if selected
+        // Handle Individual Options or Bulk Action on long press
         holder.itemView.setOnLongClickListener(v -> {
             if (selectedUserIds.isEmpty()) {
-                // If nothing is selected, long press acts as an individual delete/options trigger
                 if (listener != null) {
                     listener.onDeleteClicked(user);
                 }
             } else {
-                // If items are selected, long press triggers bulk menu for the selection
                 if (!selectedUserIds.contains(user.getUid())) {
                     toggleSelection(user.getUid());
                 }
