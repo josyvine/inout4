@@ -20,6 +20,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.inout.app.databinding.ActivityEmployeeDashboardBinding;
 import com.inout.app.models.User;
+import com.inout.app.utils.EncryptionHelper;
 
 /**
  * Main dashboard for Employees.
@@ -131,10 +132,22 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * UPDATED: Full Logout Logic.
+     * 1. Signs out of Firebase.
+     * 2. Clears the "Employee" role from local storage.
+     * 3. Returns to the absolute landing page (Splash/Role Selection).
+     */
     private void logout() {
+        // Sign out from Firebase
         mAuth.signOut();
+
+        // Clear the stored Role (Employee) so they must declare it again
+        EncryptionHelper.getInstance(this).clearUserRole();
+
+        // Return to SplashActivity and clear the activity history stack
         Intent intent = new Intent(this, SplashActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
