@@ -25,7 +25,7 @@ import com.inout.app.utils.TimeUtils;
 
 /**
  * Fragment where employees perform Check-In and Check-Out.
- * FIXED: Syncs instantly with Admin assignments and displays real user data.
+ * FIXED: Synchronized with updated User model to ensure assigned location is visible.
  */
 public class EmployeeCheckInFragment extends Fragment {
 
@@ -65,7 +65,7 @@ public class EmployeeCheckInFragment extends Fragment {
     }
 
     /**
-     * Fetches user profile to display real Name/ID and retrieve the office assignment ID.
+     * READ LOGIC: Fetches user profile and retrieves the office assignment ID.
      */
     private void loadUserDataAndStatus() {
         if (mAuth.getCurrentUser() == null) return;
@@ -79,22 +79,26 @@ public class EmployeeCheckInFragment extends Fragment {
             }
             
             if (doc != null && doc.exists()) {
+                // Map Firestore document to Java Object
                 currentUser = doc.toObject(User.class);
+                
                 if (currentUser != null) {
-                    // FIXED: Replace XML placeholders with live database data
+                    // Update UI Header with live data
                     binding.tvEmployeeName.setText(currentUser.getName() != null ? currentUser.getName() : "Unknown User");
                     binding.tvEmployeeId.setText(currentUser.getEmployeeId() != null ? currentUser.getEmployeeId() : "Pending ID");
 
-                    // Check if Admin has assigned a location ID (assignedLocationId)
-                    if (currentUser.getAssignedLocationId() != null && !currentUser.getAssignedLocationId().isEmpty()) {
-                        fetchAssignedLocationDetails(currentUser.getAssignedLocationId());
+                    // CHECK: Is a location assigned in the database?
+                    String locId = currentUser.getAssignedLocationId();
+                    if (locId != null && !locId.isEmpty()) {
+                        // Success: Go get the coordinates for this location
+                        fetchAssignedLocationDetails(locId);
                     } else {
+                        // Fail: Location ID is missing from the profile
                         binding.tvStatus.setText("Status: No workplace assigned by Admin.");
                         binding.btnCheckIn.setEnabled(false);
                         binding.btnCheckOut.setEnabled(false);
                     }
                     
-                    // Also load today's attendance state
                     loadTodayAttendance();
                 }
             }
@@ -102,18 +106,23 @@ public class EmployeeCheckInFragment extends Fragment {
     }
 
     /**
-     * Retrieves the Lat/Lng and name of the specific office assigned to this employee.
+     * Fetches specific coordinates for the office ID assigned to the user.
      */
     private void fetchAssignedLocationDetails(String locId) {
         db.collection("locations").document(locId).get().addOnSuccessListener(doc -> {
-            assignedLocation = doc.toObject(CompanyConfig.class);
-            if (assignedLocation != null) {
-                Log.d(TAG, "Working Location confirmed: " + assignedLocation.getName());
-                updateUIBasedOnStatus();
+            if (doc.exists()) {
+                assignedLocation = doc.toObject(CompanyConfig.class);
+                if (assignedLocation != null) {
+                    Log.d(TAG, "Office assignment confirmed: " + assignedLocation.getName());
+                    updateUIBasedOnStatus();
+                }
+            } else {
+                Log.e(TAG, "Assigned location ID does not exist in locations collection.");
+                binding.tvStatus.setText("Status: Workplace record not found.");
             }
         }).addOnFailureListener(e -> {
-            Log.e(TAG, "Failed to fetch assigned location coordinates", e);
-            binding.tvStatus.setText("Status: Error fetching office coordinates.");
+            Log.e(TAG, "Failed to fetch assigned location details", e);
+            binding.tvStatus.setText("Status: Connection error fetching office data.");
         });
     }
 
@@ -136,7 +145,7 @@ public class EmployeeCheckInFragment extends Fragment {
     private void updateUIBasedOnStatus() {
         if (currentUser == null) return;
 
-        // If location isn't fetched yet, keep buttons disabled to prevent GPS errors
+        // If location isn't fetched yet, keep buttons disabled to prevent distance calculation errors
         if (assignedLocation == null) {
             binding.btnCheckIn.setEnabled(false);
             binding.btnCheckOut.setEnabled(false);
@@ -144,17 +153,14 @@ public class EmployeeCheckInFragment extends Fragment {
         }
 
         if (todayRecord == null) {
-            // State: Ready for first check-in of the day
             binding.btnCheckIn.setEnabled(true);
             binding.btnCheckOut.setEnabled(false);
             binding.tvStatus.setText("Status: Ready to Check-In at " + assignedLocation.getName());
         } else if (todayRecord.getCheckOutTime() == null || todayRecord.getCheckOutTime().isEmpty()) {
-            // State: Already checked in, waiting to check out
             binding.btnCheckIn.setEnabled(false);
             binding.btnCheckOut.setEnabled(true);
             binding.tvStatus.setText("Status: Checked In at " + todayRecord.getCheckInTime());
         } else {
-            // State: Finished for today
             binding.btnCheckIn.setEnabled(false);
             binding.btnCheckOut.setEnabled(false);
             binding.tvStatus.setText("Status: Shift Completed (" + todayRecord.getTotalHours() + ")");
@@ -167,17 +173,16 @@ public class EmployeeCheckInFragment extends Fragment {
             return;
         }
 
-        // Biometric security check (Fingerprint)
+        // Biometric security check
         BiometricHelper.authenticate(requireActivity(), new BiometricHelper.BiometricCallback() {
             @Override
             public void onAuthenticationSuccess() {
-                // Biometrics passed, now verify GPS location
                 verifyLocationAndProceed(isCheckIn);
             }
 
             @Override
             public void onAuthenticationError(String errorMsg) {
-                Toast.makeText(getContext(), "Security Error: " + errorMsg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Auth Error: " + errorMsg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -196,14 +201,12 @@ public class EmployeeCheckInFragment extends Fragment {
                 binding.progressBar.setVisibility(View.GONE);
                 
                 if (location != null) {
-                    // Check if employee is within the 100m radius of the assigned office
                     boolean inRange = LocationHelper.isWithinRadius(
                             location.getLatitude(), location.getLongitude(),
                             assignedLocation.getLatitude(), assignedLocation.getLongitude(),
                             assignedLocation.getRadius());
 
                     if (inRange) {
-                        // Calculate exact distance for professional proof in CSV
                         float dist = LocationHelper.calculateDistance(
                                 location.getLatitude(), location.getLongitude(),
                                 assignedLocation.getLatitude(), assignedLocation.getLongitude());
@@ -229,7 +232,6 @@ public class EmployeeCheckInFragment extends Fragment {
         String dateId = TimeUtils.getCurrentDateId();
         String recordId = currentUser.getEmployeeId() + "_" + dateId;
 
-        // Build the attendance record object
         AttendanceRecord record = new AttendanceRecord(
                 currentUser.getEmployeeId(), 
                 currentUser.getName(), 
