@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Total width matches item_attendance_row (1000dp) to ensure alignment -->
+<!-- Total width increased to 1200dp to fit the new Transit Route column -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="1000dp"
+    android:layout_width="1200dp"
     android:layout_height="wrap_content"
     android:background="@color/table_header_gray"
     android:orientation="horizontal"
@@ -40,7 +40,17 @@
         android:textSize="12sp"
         android:textStyle="bold" />
 
-    <!-- 4. Out Text Header -->
+    <!-- 4. NEW: Transit Route Header -->
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Transit Route"
+        android:textColor="@android:color/black"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <!-- 5. Out Text Header -->
     <TextView
         android:layout_width="80dp"
         android:layout_height="wrap_content"
@@ -50,7 +60,7 @@
         android:textSize="12sp"
         android:textStyle="bold" />
 
-    <!-- 5. Total Hours Text Header -->
+    <!-- 6. Total Hours Text Header -->
     <TextView
         android:layout_width="90dp"
         android:layout_height="wrap_content"
@@ -60,7 +70,7 @@
         android:textSize="12sp"
         android:textStyle="bold" />
 
-    <!-- 6. Location Text Header -->
+    <!-- 7. Location Text Header -->
     <TextView
         android:layout_width="180dp"
         android:layout_height="wrap_content"
@@ -71,7 +81,7 @@
         android:textSize="12sp"
         android:textStyle="bold" />
 
-    <!-- 7. Distance ICON Header -->
+    <!-- 8. Distance ICON Header -->
     <FrameLayout
         android:layout_width="80dp"
         android:layout_height="wrap_content">
@@ -83,7 +93,7 @@
             app:tint="@android:color/black" />
     </FrameLayout>
 
-    <!-- 8. Fingerprint ICON Header -->
+    <!-- 9. Fingerprint ICON Header -->
     <FrameLayout
         android:layout_width="100dp"
         android:layout_height="wrap_content">
@@ -95,7 +105,7 @@
             app:tint="@android:color/black" />
     </FrameLayout>
 
-    <!-- 9. GPS ICON Header -->
+    <!-- 10. GPS ICON Header -->
     <FrameLayout
         android:layout_width="100dp"
         android:layout_height="wrap_content">
@@ -107,7 +117,7 @@
             app:tint="@android:color/black" />
     </FrameLayout>
 
-    <!-- 10. Status ICON Header -->
+    <!-- 11. Status ICON Header -->
     <FrameLayout
         android:layout_width="100dp"
         android:layout_height="wrap_content">
