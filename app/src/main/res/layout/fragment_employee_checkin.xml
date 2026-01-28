@@ -78,45 +78,74 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card_profile_summary" />
 
-    <!-- Check-In Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_check_in"
+    <!-- NEW HORIZONTAL BUTTON ROW -->
+    <LinearLayout
+        android:id="@+id/layout_buttons"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="CHECK-IN"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:cornerRadius="12dp"
-        app:icon="@android:drawable/ic_lock_power_off"
-        app:iconGravity="textStart"
+        android:orientation="horizontal"
+        android:weightSum="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_status" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_status">
 
-    <!-- Check-Out Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_check_out"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="16dp"
-        android:text="CHECK-OUT"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:cornerRadius="12dp"
-        app:icon="@android:drawable/ic_lock_power_off"
-        app:iconGravity="textStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_check_in" />
+        <!-- IN BUTTON -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_check_in"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="IN"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/status_green"
+            app:cornerRadius="12dp"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconGravity="textTop"
+            app:iconSize="28dp" />
+
+        <!-- TRANSIT BUTTON (Bus Icon) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_transit"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="4dp"
+            android:text="TRANSIT"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:backgroundTint="@android:color/darker_gray"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_transit_bus"
+            app:iconGravity="textTop"
+            app:iconSize="28dp" />
+
+        <!-- OUT BUTTON -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_check_out"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="OUT"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/status_red"
+            app:cornerRadius="12dp"
+            app:icon="@android:drawable/ic_lock_power_off"
+            app:iconGravity="textTop"
+            app:iconSize="28dp" />
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:gravity="center"
-        android:text="Verification requires Fingerprint and GPS Location within 100m."
+        android:text="Verification requires Fingerprint and GPS."
         android:textColor="@android:color/darker_gray"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
